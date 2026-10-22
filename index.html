@@ -64,7 +64,7 @@ const sortCn=(a,b)=>pinyinCollator.compare(String(a??""),String(b??""));
 const unique=items=>[...new Set(items.filter(Boolean))].sort(sortCn);
 function fill(sel, values, current){sel.innerHTML=values.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("");if(current&&values.includes(current))sel.value=current;}
 function regionValues(province){const vals=unique(data.filter(r=>r.省级===province).map(r=>r.地区));return vals.sort((a,b)=>a===province?-1:b===province?1:sortCn(a,b));}
-function setDefaults(){fill(byId("province"),unique(data.map(r=>r.省级)),"北京市");fill(byId("region"),regionValues(byId("province").value),"北京市");fill(byId("item"),unique(data.filter(r=>r.省级===byId("province").value&&r.地区===byId("region").value).map(r=>r.商品)),"白萝卜");fill(byId("spec"),unique(data.filter(r=>r.省级===byId("province").value&&r.地区===byId("region").value&&r.商品===byId("item").value).map(r=>r.规格)),"新鲜中等（农贸零售价格）");}
+function setDefaults(){fill(byId("province"),unique(data.map(r=>r.省级)),"北京市");fill(byId("region"),regionValues(byId("province").value),"北京市");fill(byId("item"),unique(data.filter(r=>r.省级===byId("province").value&&r.地区===byId("region").value).map(r=>r.商品)),"农产品批发价格指数");fill(byId("spec"),unique(data.filter(r=>r.省级===byId("province").value&&r.地区===byId("region").value&&r.商品===byId("item").value).map(r=>r.规格)),"综合指数");}
 function sync(changed){if(changed==="province")fill(byId("region"),regionValues(byId("province").value));if(changed==="province"||changed==="region")fill(byId("item"),unique(data.filter(r=>r.省级===byId("province").value&&r.地区===byId("region").value).map(r=>r.商品)),byId("item").value);if(changed!=="spec")fill(byId("spec"),unique(data.filter(r=>r.省级===byId("province").value&&r.地区===byId("region").value&&r.商品===byId("item").value).map(r=>r.规格)),byId("spec").value);render();}
 function rowsForSelection(){return data.filter(r=>r.省级===byId("province").value&&r.地区===byId("region").value&&r.商品===byId("item").value&&r.规格===byId("spec").value).sort((a,b)=>a.日期.localeCompare(b.日期));}
 function table(rows){byId("tbody").innerHTML=rows.slice().reverse().map(r=>`<tr><td>${esc(r.日期)}<br>${esc(r["期次/发布日期"])}</td><td>${esc(r.商品)}<br>${esc(r.规格)}</td><td>${esc(r.价格)} ${esc(r.单位)}</td><td>${esc(r.官方环比)}</td><td>${esc(r.口径)}</td><td><a href="${esc(r.来源链接)}" target="_blank" rel="noopener">官方链接</a></td></tr>`).join("")||`<tr><td colspan="6" class="empty">暂无匹配数据</td></tr>`;}
@@ -76,6 +76,7 @@ loadData();["province","region","item","spec"].forEach(id=>byId(id).addEventList
 </script>
 </body>
 </html>
+
 
 
 
